@@ -333,7 +333,9 @@ static void stabilizerTask(void* param)
   systemWaitStart();
   DEBUG_PRINT("Starting stabilizer loop\n");
   rateSupervisorInit(&rateSupervisorContext, xTaskGetTickCount(), M2T(1000), 997, 1003, 1);
-  xRateSupervisorSemaphore = xSemaphoreCreateBinary();
+
+  // xRateSupervisorSemaphore = xSemaphoreCreateBinary();
+  
   STATIC_MEM_TASK_CREATE(rateSupervisorTask, rateSupervisorTask, RATE_SUPERVISOR_TASK_NAME, NULL, RATE_SUPERVISOR_TASK_PRI);
 
   while(1) {
@@ -413,7 +415,13 @@ static void stabilizerTask(void* param)
       stabilizerStep++;
       STATS_CNT_RATE_EVENT(&stabilizerRate);
 
-      xSemaphoreGive(xRateSupervisorSemaphore);
+      // xSemaphoreGive(xRateSupervisorSemaphore);
+      if (!rateSupervisorValidate(&rateSupervisorContext, xTaskGetTickCount())) {
+        if (!rateWarningDisplayed) {
+          DEBUG_PRINT("WARNING: stabilizer loop rate is off (%lu)\n", (unsigned long)rateSupervisorLatestCount(&rateSupervisorContext));
+          rateWarningDisplayed = true;
+        }
+      }
     #ifndef CONFIG_PLATFORM_SITL
     }
     #endif
