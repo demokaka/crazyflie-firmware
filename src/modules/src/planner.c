@@ -222,7 +222,7 @@ int plan_go_to(struct planner *p, bool relative, bool linear, struct vec hover_p
 	return plan_go_to_from(p, &setpoint, relative, linear, hover_pos, hover_yaw, duration, t);
 }
 
-int plan_spiral_from(struct planner *p, const struct traj_eval *curr_eval, bool sideways, bool clockwise, float spiral_angle, float radius0, float radiusF, float ascent, float duration, float t)
+/*int plan_spiral_from(struct planner *p, const struct traj_eval *curr_eval, bool sideways, bool clockwise, float spiral_angle, float radius0, float radiusF, float ascent, float duration, float t)
 {
 	// Limitting the inputs
   if (spiral_angle > 2*PI) {
@@ -324,6 +324,7 @@ int plan_spiral_from(struct planner *p, const struct traj_eval *curr_eval, bool 
 	p->trajectory = &p->planned_trajectory;
 	return 0;
 }
+*/
 
 int plan_start_trajectory(struct planner *p, struct piecewise_traj* trajectory, bool reversed, bool relative, struct vec start_from)
 {
