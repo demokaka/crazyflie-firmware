@@ -130,6 +130,12 @@ static kveMemory_t kve = {
 };
 #else
 // TODO: Can we implement persistent storage without EEPROM?
+static kveMemory_t kve = {
+  .memorySize = KVE_PARTITION_LENGTH,
+  .read = NULL,
+  .write = NULL,
+  .flush = NULL,
+};
 #endif
 
 // Public API
