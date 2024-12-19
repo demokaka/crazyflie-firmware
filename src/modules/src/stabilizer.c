@@ -282,29 +282,29 @@ static void controlMotors(const control_t* control) {
   setMotorRatios(&motorPwm);
 }
 
-void rateSupervisorTask(void *pvParameters) {
-  while (1) {
-    // Wait for the semaphore to be given by the stabilizerTask
-    if (xSemaphoreTake(xRateSupervisorSemaphore, M2T(2000)) == pdTRUE) {
-      // Validate the rate
-      if (!rateSupervisorValidate(&rateSupervisorContext, xTaskGetTickCount())) {
-        if (!rateWarningDisplayed) {
-          // DEBUG_PRINT("WARNING: stabilizer loop rate is off (%lu)\n", rateSupervisorLatestCount(&rateSupervisorContext));
-          DEBUG_PRINT("WARNING: stabilizer loop rate is off (%lu)\n", (unsigned long)rateSupervisorLatestCount(&rateSupervisorContext));
-          rateWarningDisplayed = true;
-        }
-      }
+// void rateSupervisorTask(void *pvParameters) {
+//   while (1) {
+//     // Wait for the semaphore to be given by the stabilizerTask
+//     if (xSemaphoreTake(xRateSupervisorSemaphore, M2T(2000)) == pdTRUE) {
+//       // Validate the rate
+//       if (!rateSupervisorValidate(&rateSupervisorContext, xTaskGetTickCount())) {
+//         if (!rateWarningDisplayed) {
+//           // DEBUG_PRINT("WARNING: stabilizer loop rate is off (%lu)\n", rateSupervisorLatestCount(&rateSupervisorContext));
+//           DEBUG_PRINT("WARNING: stabilizer loop rate is off (%lu)\n", (unsigned long)rateSupervisorLatestCount(&rateSupervisorContext));
+//           rateWarningDisplayed = true;
+//         }
+//       }
     
-    } else {
-      // Don't assert if sensors are suspended
-      if (isSensorsSuspended() == false) {
-        // Handle the case where the semaphore was not given within the timeout
-        DEBUG_PRINT("ERROR: stabilizerTask is blocking\n");
-        ASSERT(false); // For safety, assert if the stabilizer task is blocking to ensure motor shutdown
-      }
-    }
-  }
-}
+//     } else {
+//       // Don't assert if sensors are suspended
+//       if (isSensorsSuspended() == false) {
+//         // Handle the case where the semaphore was not given within the timeout
+//         DEBUG_PRINT("ERROR: stabilizerTask is blocking\n");
+//         ASSERT(false); // For safety, assert if the stabilizer task is blocking to ensure motor shutdown
+//       }
+//     }
+//   }
+// }
 
 /* The stabilizer loop runs at 1kHz. It is the
  * responsibility of the different functions to run slower by skipping call
