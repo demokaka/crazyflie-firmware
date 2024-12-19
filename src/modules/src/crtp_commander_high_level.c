@@ -434,9 +434,11 @@ static int handleCommand(const enum TrajectoryCommand_e command, const uint8_t* 
     case COMMAND_GO_TO_2:
       ret = go_to2((const struct data_go_to_2*)data);
       break;
+    #ifndef CONFIG_PLATFORM_SITL
     case COMMAND_SPIRAL:
       ret = spiral((const struct data_spiral*)data);
       break;
+    #endif
     case COMMAND_START_TRAJECTORY:
       ret = start_trajectory((const struct data_start_trajectory*)data);
       break;
@@ -926,7 +928,7 @@ int crtpCommanderHighLevelGoTo2(const float x, const float y, const float z, con
 
   return handleCommand(COMMAND_GO_TO_2, (const uint8_t*)&data);
 }
-
+/*
 int crtpCommanderHighLevelSpiral(const float phi, const float r0, const float rf, const float dz, const float duration_s, const bool sideways)
 {
   struct data_spiral data =
@@ -942,6 +944,7 @@ int crtpCommanderHighLevelSpiral(const float phi, const float r0, const float rf
 
   return handleCommand(COMMAND_SPIRAL, (const uint8_t*)&data);
 }
+*/
 
 bool crtpCommanderHighLevelIsTrajectoryDefined(uint8_t trajectoryId)
 {
