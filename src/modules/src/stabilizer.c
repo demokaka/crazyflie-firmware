@@ -86,7 +86,8 @@ static ControllerType controllerType;
 static STATS_CNT_RATE_DEFINE(stabilizerRate, 500);
 static rateSupervisor_t rateSupervisorContext;
 static bool rateWarningDisplayed = false;
-SemaphoreHandle_t xRateSupervisorSemaphore;
+
+// SemaphoreHandle_t xRateSupervisorSemaphore;
 
 static struct {
   // position - mm
