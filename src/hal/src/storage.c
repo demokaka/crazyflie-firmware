@@ -34,8 +34,10 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 
+#ifndef CONFIG_PLATFORM_SITL
 #include "i2cdev.h"
 #include "eeprom.h"
+#endif
 
 #include <string.h>
 
@@ -119,12 +121,16 @@ static void flushEeprom(void)
   // NOP for now, lets fix the EEPROM write first!
 }
 
+#ifndef CONFIG_PLATFORM_SITL
 static kveMemory_t kve = {
   .memorySize = KVE_PARTITION_LENGTH,
   .read = readEeprom,
   .write = writeEeprom,
   .flush = flushEeprom,
 };
+#else
+// TODO: Can we implement persistent storage without EEPROM?
+#endif
 
 // Public API
 
