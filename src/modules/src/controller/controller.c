@@ -7,7 +7,10 @@
 #include "controller_mellinger.h"
 #include "controller_indi.h"
 #include "controller_brescianini.h"
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "controller_lee.h"
+#endif
 
 #ifndef CONFIG_PLATFORM_SITL
 #include "autoconf.h"
@@ -31,7 +34,9 @@ static ControllerFcns controllerFunctions[] = {
   {.init = controllerMellingerFirmwareInit, .test = controllerMellingerFirmwareTest, .update = controllerMellingerFirmware, .name = "Mellinger"},
   {.init = controllerINDIInit, .test = controllerINDITest, .update = controllerINDI, .name = "INDI"},
   {.init = controllerBrescianiniInit, .test = controllerBrescianiniTest, .update = controllerBrescianini, .name = "Brescianini"},
+  #ifndef CONFIG_PLATFORM_SITL
   {.init = controllerLeeFirmwareInit, .test = controllerLeeFirmwareTest, .update = controllerLeeFirmware, .name = "Lee"},
+  #endif
   #ifdef CONFIG_CONTROLLER_OOT
   {.init = controllerOutOfTreeInit, .test = controllerOutOfTreeTest, .update = controllerOutOfTree, .name = "OutOfTree"},
   #endif
@@ -58,7 +63,9 @@ void controllerInit(ControllerType controller) {
   #elif defined(CONFIG_CONTROLLER_BRESCIANINI)
     #define CONTROLLER ControllerTypeBrescianini
   #elif defined(CONFIG_CONTROLLER_LEE)
-    #define CONTROLLER ControllerTypeLee
+    #ifndef CONFIG_PLATFORM_SITL
+      #define CONTROLLER ControllerTypeLee
+    #endif
   #elif defined(CONFIG_CONTROLLER_OOT)
     #define CONTROLLER ControllerTypeOot
   #else
