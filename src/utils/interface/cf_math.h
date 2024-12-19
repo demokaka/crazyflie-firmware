@@ -162,31 +162,31 @@ static inline void mat_inv(const arm_matrix_instance_f32 * pSrc, arm_matrix_inst
   free(WORK);
 }
 
-// static inline void mat_mult(const arm_matrix_instance_f32 * pSrcA, const arm_matrix_instance_f32 * pSrcB, arm_matrix_instance_f32 * pDst)
-// { 
-//   bool is_valid = (pSrcA->numCols == pSrcB->numRows) && (pSrcA->numRows == pDst->numRows) && (pSrcB->numCols == pDst->numCols);
-//   configASSERT(is_valid);
-//   uint8_t i,j,k;
-//   for(i=0; i< pDst->numRows ; i++){
-//     for(j=0; j<pDst->numCols ; j++){
-//       pDst->pData[j+ i*pDst->numCols] = 0.0f;
-//     }
-//   }
-//   for(i=0; i< pDst->numRows ; i++){
-//     for(j=0; j<pDst->numCols ; j++){
-//       for(k=0; k<pSrcA->numCols; k++){
-//         pDst->pData[j+ i*pDst->numCols] += pSrcA->pData[i*pSrcA->numCols + k ] * pSrcB->pData[k*pSrcB->numCols + j];
-//       }
-//     }
-//   }
-// }
-
-static inline void mat_mult(const arm_matrix_instance_f32 * pSrcA, const arm_matrix_instance_f32 * pSrcB, arm_matrix_instance_f32 * pDst) 
+static inline void mat_mult(const arm_matrix_instance_f32 * pSrcA, const arm_matrix_instance_f32 * pSrcB, arm_matrix_instance_f32 * pDst)
 { 
   bool is_valid = (pSrcA->numCols == pSrcB->numRows) && (pSrcA->numRows == pDst->numRows) && (pSrcB->numCols == pDst->numCols);
   configASSERT(is_valid);
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, pSrcA->numRows, pSrcB->numCols, pSrcA->numCols, 1.0, pSrcA->pData, pSrcA->numCols, pSrcB->pData, pSrcB->numCols, 0.0, pDst->pData, pDst->numCols);
+  uint8_t i,j,k;
+  for(i=0; i< pDst->numRows ; i++){
+    for(j=0; j<pDst->numCols ; j++){
+      pDst->pData[j+ i*pDst->numCols] = 0.0f;
+    }
+  }
+  for(i=0; i< pDst->numRows ; i++){
+    for(j=0; j<pDst->numCols ; j++){
+      for(k=0; k<pSrcA->numCols; k++){
+        pDst->pData[j+ i*pDst->numCols] += pSrcA->pData[i*pSrcA->numCols + k ] * pSrcB->pData[k*pSrcB->numCols + j];
+      }
+    }
+  }
 }
+
+// static inline void mat_mult(const arm_matrix_instance_f32 * pSrcA, const arm_matrix_instance_f32 * pSrcB, arm_matrix_instance_f32 * pDst) 
+// { 
+//   bool is_valid = (pSrcA->numCols == pSrcB->numRows) && (pSrcA->numRows == pDst->numRows) && (pSrcB->numCols == pDst->numCols);
+//   configASSERT(is_valid);
+//   cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, pSrcA->numRows, pSrcB->numCols, pSrcA->numCols, 1.0, pSrcA->pData, pSrcA->numCols, pSrcB->pData, pSrcB->numCols, 0.0, pDst->pData, pDst->numCols);
+// }
 
 // static inline void mat_scale(const arm_matrix_instance_f32 * pSrcA, float32_t scale, arm_matrix_instance_f32 * pDst) {
 //   bool is_valid = (pSrcA->numRows == pDst->numRows) && (pSrcA->numCols == pDst->numCols);
@@ -199,12 +199,23 @@ static inline void mat_mult(const arm_matrix_instance_f32 * pSrcA, const arm_mat
 //   } 
 // }
 
-static inline void mat_scale(const arm_matrix_instance_f32 * pSrcA, float32_t scale, arm_matrix_instance_f32 * pDst) 
-{
+static inline void mat_scale(const arm_matrix_instance_f32 * pSrcA, float32_t scale, arm_matrix_instance_f32 * pDst) {
   bool is_valid = (pSrcA->numRows == pDst->numRows) && (pSrcA->numCols == pDst->numCols);
   configASSERT(is_valid);
-  cblas_sscal(pSrcA->numRows*pSrcA->numCols, scale, pSrcA->pData, 1);
+  uint8_t i,j;
+  for (i=0 ; i< pSrcA->numRows; i++){
+    for(j=0 ; j< pSrcA->numCols; j++){
+      pDst->pData[i * pDst->numCols + j] = scale * pSrcA->pData[i*pSrcA->numCols + j];
+    }
+  } 
 }
+
+// static inline void mat_scale(const arm_matrix_instance_f32 * pSrcA, float32_t scale, arm_matrix_instance_f32 * pDst) 
+// {
+//   bool is_valid = (pSrcA->numRows == pDst->numRows) && (pSrcA->numCols == pDst->numCols);
+//   configASSERT(is_valid);
+//   cblas_sscal(pSrcA->numRows*pSrcA->numCols, scale, pSrcA->pData, 1);
+// }
 #endif
 
 
