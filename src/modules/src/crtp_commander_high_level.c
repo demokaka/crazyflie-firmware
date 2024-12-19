@@ -140,8 +140,8 @@ enum TrajectoryCommand_e {
   COMMAND_LAND_2                  = 8,
   COMMAND_TAKEOFF_WITH_VELOCITY   = 9,
   COMMAND_LAND_WITH_VELOCITY      = 10,
-  COMMAND_SPIRAL                  = 11,
-  COMMAND_GO_TO_2                 = 12,
+  // COMMAND_SPIRAL                  = 11,
+  COMMAND_GO_TO_2                 = 11,
 };
 
 struct data_set_group_mask {
