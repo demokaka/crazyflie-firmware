@@ -592,6 +592,7 @@ static void mspHandleRequestBatteryState(MspObject* pMspObject)
   mspMakeTxPacket(pMspObject, MSP_BATTERY_STATE, (uint8_t*) batteryState, sizeof(MspBatteryState));
 }
 
+#ifndef CONFIG_PLATFORM_SITL
 static void mspHandleRequestSetMotor(MspObject* pMspObject)
 {
   // Ensure that the motorPowerSet functionality is first enabled
@@ -606,6 +607,7 @@ static void mspHandleRequestSetMotor(MspObject* pMspObject)
 
   mspMakeTxPacket(pMspObject, MSP_SET_MOTOR, 0, 0);
 }
+#endif
 
 /*
  * Maps the motorSpeed from a value between 1000 and 2000 to
