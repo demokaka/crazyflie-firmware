@@ -39,8 +39,6 @@
 #else
 #include "FreeRTOSConfig.h"
 #include "math.h"
-#include "lapack.h"
-#include "cblas.h"
 #endif
 
 #include "cfassert.h"
