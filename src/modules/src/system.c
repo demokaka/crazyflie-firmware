@@ -182,7 +182,7 @@ void systemInit(void)
   pmInit();
   buzzerInit();
   peerLocalizationInit();
-  #ifndef CONFIG_PLATFORM_SITL
+  #endif
 
 #ifdef CONFIG_APP_ENABLE
   appInit();
