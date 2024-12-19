@@ -126,10 +126,16 @@ static struct {
 } setpointCompressed;
 
 STATIC_MEM_TASK_ALLOC(stabilizerTask, STABILIZER_TASK_STACKSIZE);
+
+#ifndef CONFIG_PLATFORM_SITL
 STATIC_MEM_TASK_ALLOC(rateSupervisorTask, RATE_SUPERVISOR_TASK_STACKSIZE);
+#endif
 
 static void stabilizerTask(void* param);
+
+#ifndef CONFIG_PLATFORM_SITL
 static void rateSupervisorTask(void* param);
+#endif
 
 static void calcSensorToOutputLatency(const sensorData_t *sensorData)
 {
@@ -335,9 +341,10 @@ static void stabilizerTask(void* param)
   rateSupervisorInit(&rateSupervisorContext, xTaskGetTickCount(), M2T(1000), 997, 1003, 1);
 
   // xRateSupervisorSemaphore = xSemaphoreCreateBinary();
-  
+  #ifndef CONFIG_PLATFORM_SITL
   STATIC_MEM_TASK_CREATE(rateSupervisorTask, rateSupervisorTask, RATE_SUPERVISOR_TASK_NAME, NULL, RATE_SUPERVISOR_TASK_PRI);
-
+  #endif
+  
   while(1) {
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();
