@@ -41,11 +41,14 @@
 
 #ifndef CONFIG_H_
 #define CONFIG_H_
+#ifndef CONFIG_PLATFORM_SITL
 #include "nrf24l01.h"
 
 #include "trace.h"
+#endif
 #include "usec_time.h"
 
+#ifndef CONFIG_PLATFORM_SITL
 #define CONFIG_BLOCK_ADDRESS    (2048 * (64-1))
 #define MCU_ID_ADDRESS          0x1FFF7A10
 #define MCU_FLASH_SIZE_ADDRESS  0x1FFF7A22
@@ -59,7 +62,7 @@
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() usecTimerInit()
 #define portGET_RUN_TIME_COUNTER_VALUE() usecTimestamp()
 
-
+#endif
 // Task priorities. Higher number higher priority
 #define PASSTHROUGH_TASK_PRI      5
 #define STABILIZER_TASK_PRI       5
