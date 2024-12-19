@@ -31,6 +31,21 @@
 
 #ifdef CONFIG_PLATFORM_SITL
 
+
+#define ASSERT(e)  if (e) ; \
+        else vAssertCalled( __LINE__ , __FILE__)
+
+#ifdef DEBUG
+#define IF_DEBUG_ASSERT(e)  if (e) ; \
+        else vAssertCalled(__LINE__ , __FILE__)
+#else
+#define IF_DEBUG_ASSERT(e)
+#endif
+
+#define ASSERT_FAILED() vAssertCalled(__LINE__ , __FILE__)
+
+#else // Case no simulation
+
 #define ASSERT(e)  if (e) ; \
         else assertFail( #e, __FILE__, __LINE__ )
 
