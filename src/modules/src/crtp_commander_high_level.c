@@ -233,6 +233,7 @@ struct data_go_to_2 {
 } __attribute__((packed));
 
 // "fly along a spiral"
+#ifndef CONFIG_PLATFORM_SITL
 struct data_spiral {
   uint8_t groupMask; // mask for which CFs this should apply to
   uint8_t sideways;  // set to true, if crazyfly should spiral sideways instead of forward
@@ -243,6 +244,7 @@ struct data_spiral {
   float dz; // m
   float duration; // sec
 } __attribute__((packed));
+#endif
 
 // starts executing a specified trajectory
 struct data_start_trajectory {
@@ -272,7 +274,11 @@ static int land_with_velocity(const struct data_land_with_velocity* data);
 static int stop(const struct data_stop* data);
 static int go_to(const struct data_go_to* data);
 static int go_to2(const struct data_go_to_2* data);
+
+#ifndef CONFIG_PLATFORM_SITL
 static int spiral(const struct data_spiral* data);
+#endif
+
 static int start_trajectory(const struct data_start_trajectory* data);
 static int define_trajectory(const struct data_define_trajectory* data);
 
@@ -686,7 +692,7 @@ int go_to2(const struct data_go_to_2* data)
   return result;
 }
 
-int spiral(const struct data_spiral* data)
+/*int spiral(const struct data_spiral* data)
 {
   static struct traj_eval ev = {
     // pos, vel, yaw will be filled before using
@@ -710,6 +716,7 @@ int spiral(const struct data_spiral* data)
   }
   return result;
 }
+*/
 
 int start_trajectory(const struct data_start_trajectory* data)
 {
