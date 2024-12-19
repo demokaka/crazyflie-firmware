@@ -29,7 +29,10 @@
 #include "num.h"
 #include <math.h>
 #include <float.h>
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "autoconf.h"
+#endif
 
 void pidInit(PidObject* pid, const float desired, const float kp,
              const float ki, const float kd, const float kff, const float dt,
