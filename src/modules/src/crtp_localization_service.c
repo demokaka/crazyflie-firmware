@@ -47,7 +47,9 @@
 #include "lighthouse_storage.h"
 #endif
 
+#ifdef CONFIG_DECK_LOCO
 #include "locodeck.h"
+#endif
 
 #include "estimator.h"
 #include "quatcompress.h"
