@@ -87,8 +87,9 @@ set (CF2_SITL_INCLUDE_DIRS
   ${FREERTOS_SRC_DIR}/portable/ThirdParty/GCC/Posix
   ${FREERTOS_SRC_DIR}/portable/ThirdParty/GCC/Posix/utils
   ${CF2_SITL_SRCS_DIR}/config
-  #${CF2_SITL_SRCS_DIR}/deck/interface
-  #${CF2_SITL_SRCS_DIR}/deck/drivers/interface
+  ${CF2_SITL_SRCS_DIR}/deck/interface
+  ${CF2_SITL_SRCS_DIR}/deck/drivers/interface
+  ${CF2_SITL_SRCS_DIR}/drivers
   ${CF2_SITL_SRCS_DIR}/hal/interface
   ${CF2_SITL_SRCS_DIR}/platform
   ${CF2_SITL_SRCS_DIR}/utils/interface
