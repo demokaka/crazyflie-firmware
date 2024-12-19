@@ -32,7 +32,11 @@
 #include "log.h"
 #include "param.h"
 #include "num.h"
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "autoconf.h"
+#endif
+
 #include "config.h"
 #include "math.h"
 #include "platform_defaults.h"

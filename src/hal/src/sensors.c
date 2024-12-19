@@ -31,7 +31,9 @@
 #include "platform.h"
 #include "debug.h"
 
+#ifndef CONFIG_PLATFORM_SITL
 #include "autoconf.h"
+#endif
 
 // https://gcc.gnu.org/onlinedocs/cpp/Stringizing.html
 #define xstr(s) str(s)
@@ -47,6 +49,10 @@
 
 #ifdef CONFIG_SENSORS_BOSCH
   #include "sensors_bosch.h"
+#endif
+
+#ifdef CONFIG_SENSORS_SITL
+  #include "sensors_sitl.h"
 #endif
 
 
@@ -140,6 +146,23 @@ static const sensorsImplementation_t sensorImplementations[SensorImplementation_
     .dataAvailableCallback = nullFunction,
   },
 #endif
+#ifdef CONFIG_SENSORS_SITL
+  {
+    .implements = SensorImplementation_sitl,
+    .init = sensorsSimInit,
+    .test = sensorsSimTest,
+    .areCalibrated = sensorsSimAreCalibrated,
+    .manufacturingTest = sensorsSimManufacturingTest,
+    .acquire = sensorsSimAcquire,
+    .waitDataReady = sensorsSimWaitDataReady,
+    .readGyro = sensorsSimReadGyro,
+    .readAcc = sensorsSimReadAcc,
+    .readMag = sensorsSimReadMag,
+    .readBaro = sensorsSimReadBaro,
+    .setAccMode = sensorsSimSetAccMode,
+    .dataAvailableCallback = nullFunction,
+  },
+#endif
 };
 
 static const sensorsImplementation_t* activeImplementation;
@@ -208,14 +231,20 @@ void sensorsSetAccMode(accModes accMode) {
 
 void sensorsSuspend()
 {
+  #ifndef CONFIG_SENSORS_SITL
   NVIC_DisableIRQ(EXTI15_10_IRQn);
+  
   sensorsSuspended = true;
+  #endif
 }
 
 void sensorsResume()
 {
+  #ifndef CONFIG_SENSORS_SITL
   NVIC_EnableIRQ(EXTI15_10_IRQn);
   sensorsSuspended = false;
+
+  #endif
 }
 
 bool isSensorsSuspended(void)

@@ -29,6 +29,8 @@
 #ifndef __CFASSERT_H__
 #define __CFASSERT_H__
 
+#ifdef CONFIG_PLATFORM_SITL
+
 #define ASSERT(e)  if (e) ; \
         else assertFail( #e, __FILE__, __LINE__ )
 
@@ -96,5 +98,7 @@ void storeAssertTextData(const char *text);
  * @return false  If no assert information exists
  */
 bool cfAssertNormalStartTest(void);
+
+#endif // SITL
 
 #endif //__CFASSERT_H__

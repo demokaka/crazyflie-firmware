@@ -29,11 +29,18 @@
 #include "config.h"
 #include "FreeRTOS.h"
 #include "param_logic.h"
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "storage.h"
+#endif
+
 #include "crc32.h"
 #include "debug.h"
 #include "cfassert.h"
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "autoconf.h"
+#endif
 
 #if 0
 #define PARAM_DEBUG(fmt, ...) DEBUG_PRINT("D/param " fmt, ## __VA_ARGS__)

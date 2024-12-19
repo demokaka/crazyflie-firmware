@@ -35,7 +35,11 @@
 #include "sensfusion6.h"
 #include "commander.h"
 #include "version.h"
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "motors.h"
+#endif
+
 #include "string.h"
 #include "platform.h"
 #include "param.h"
@@ -146,20 +150,25 @@ typedef struct _MspUid
   uint32_t uid[3];
 }__attribute__((packed)) MspUid;
 
+#ifndef CONFIG_PLATFORM_SITL
 typedef struct _MspSet4WayIf
 {
   uint8_t connectedEscs;
 }__attribute__((packed)) MspSet4WayIf;
+#endif
 
 typedef struct _MspFeatures
 {
   uint32_t featureBits;
 }__attribute__((packed)) MspFeatures;
 
+#ifndef CONFIG_PLATFORM_SITL
 typedef struct _MspMotors
 {
   uint16_t data[NBR_OF_MOTORS];
 }__attribute__((packed)) MspMotors;
+#endif
+
 
 typedef struct _MspBatteryState
 {
@@ -179,8 +188,11 @@ typedef struct _MspSetMotors
 }__attribute__((packed)) MspSetMotors;
 
 static bool hasSet4WayIf = false;
+
+#ifndef CONFIG_PLATFORM_SITL
 static paramVarId_t motorPowerSetEnableParam;
 static paramVarId_t motorParams[NBR_OF_MOTORS];
+#endif
 
 // Helpers
 static uint8_t mspComputeCrc(const MspHeader* header, const uint8_t* data, const uint16_t dataLen);
@@ -197,11 +209,16 @@ static void mspHandleRequestMspBoxIds(MspObject* pMspObject);
 static void mspHandleRequestsApiVersion(MspObject* pMspObject);
 static void mspHandleRequestsFcVariant(MspObject* pMspObject);
 static void mspHandleRequestsFcVersion(MspObject* pMspObject);
-static void mspHandleRequestsBoardInfo(MspObject* pMspObject);
+
 static void mspHandleRequestsBuildInfo(MspObject* pMspObject);
 static void mspHandleRequestsUiid(MspObject* pMspObject);
+
+#ifndef CONFIG_PLATFORM_SITL
+static void mspHandleRequestsBoardInfo(MspObject* pMspObject);
 static void mspHandleRequestsSet4WayIf(MspObject* pMspObject);
 static void mspHandleRequestMotor(MspObject* pMspObject);
+#endif
+
 static void mspHandleRequestFeaturesConfig(MspObject* pMspObject);
 static void mspHandleRequestBatteryState(MspObject* pMspObject);
 static void mspHandleRequestSetMotor(MspObject* pMspObject);
@@ -212,11 +229,13 @@ void mspInit(MspObject* pMspObject, const MspResponseCallback callback)
   pMspObject->requestState = MSP_REQUEST_STATE_WAIT_FOR_START;
   pMspObject->responseCallback = callback;
   // Get params from internal parameter API, which we need to enable and set the motor PWM.
+  #ifndef CONFIG_PLATFORM_SITL
   motorPowerSetEnableParam = paramGetVarId("motorPowerSet", "enable");
   motorParams[0] = paramGetVarId("motorPowerSet", "m1");
   motorParams[1] = paramGetVarId("motorPowerSet", "m2");
   motorParams[2] = paramGetVarId("motorPowerSet", "m3");
   motorParams[3] = paramGetVarId("motorPowerSet", "m4");
+  #endif
 }
 
 void mspProcessByte(MspObject* pMspObject, const uint8_t data)
@@ -372,31 +391,39 @@ static void mspProcessRequest(MspObject* pMspObject)
     case MSP_FC_VERSION:
       mspHandleRequestsFcVersion(pMspObject);
       break;
+    #ifndef CONFIG_PLATFORM_SITL
     case MSP_BOARD_INFO:
       mspHandleRequestsBoardInfo(pMspObject);
       break;
+    #endif
     case MSP_BUILD_INFO:
       mspHandleRequestsBuildInfo(pMspObject);
       break;
     case MSP_UID:
       mspHandleRequestsUiid(pMspObject);
       break;
+    #ifndef CONFIG_PLATFORM_SITL
     case MSP_SET_4WAY_IF:
       mspHandleRequestsSet4WayIf(pMspObject);
       hasSet4WayIf = true;
       break;
+    #endif
+    #ifndef CONFIG_PLATFORM_SITL
     case MSP_MOTOR:
       mspHandleRequestMotor(pMspObject);
       break;
+    #endif
     case MSP_FEATURE_CONFIG:
       mspHandleRequestFeaturesConfig(pMspObject);
       break;
     case MSP_BATTERY_STATE:
       mspHandleRequestBatteryState(pMspObject);
       break;
+    #ifndef CONFIG_PLATFORM_SITL
     case MSP_SET_MOTOR:
       mspHandleRequestSetMotor(pMspObject);
       break;
+    #endif
     default:
       DEBUG_PRINT("Received unsupported MSP request: %d\n", pMspObject->requestHeader.command);
       return;
@@ -495,6 +522,7 @@ static void mspHandleRequestsFcVersion(MspObject* pMspObject)
   mspMakeTxPacket(pMspObject, MSP_FC_VERSION, (uint8_t*) fcVersion, sizeof(MspFcVersion));
 }
 
+#ifndef CONFIG_PLATFORM_SITL
 static void mspHandleRequestsBoardInfo(MspObject* pMspObject)
 {
   MspBoardInfo* boardInfo = (MspBoardInfo*)(pMspObject->mspResponse + sizeof(MspHeader));
@@ -503,6 +531,7 @@ static void mspHandleRequestsBoardInfo(MspObject* pMspObject)
   boardInfo->board_version[1] = 1;
   mspMakeTxPacket(pMspObject, MSP_BOARD_INFO, (uint8_t*) boardInfo, sizeof(MspBoardInfo));
 }
+#endif
 
 static void mspHandleRequestsBuildInfo(MspObject* pMspObject)
 {
@@ -521,13 +550,16 @@ static void mspHandleRequestsUiid(MspObject* pMspObject)
   mspMakeTxPacket(pMspObject, MSP_UID, (uint8_t*) uuid, sizeof(MspUid));
 }
 
+#ifndef CONFIG_PLATFORM_SITL
 static void mspHandleRequestsSet4WayIf(MspObject* pMspObject)
 {
   MspSet4WayIf* set4WayIf = (MspSet4WayIf*)(pMspObject->mspResponse + sizeof(MspHeader));
   set4WayIf->connectedEscs = NBR_OF_MOTORS;
   mspMakeTxPacket(pMspObject, MSP_SET_4WAY_IF, (uint8_t*) set4WayIf, sizeof(MspSet4WayIf));
 }
+#endif
 
+#ifndef CONFIG_PLATFORM_SITL
 static void mspHandleRequestMotor(MspObject* pMspObject)
 {
   MspMotors* motorData = (MspMotors*)(pMspObject->mspResponse + sizeof(MspHeader));
@@ -537,6 +569,7 @@ static void mspHandleRequestMotor(MspObject* pMspObject)
   }
   mspMakeTxPacket(pMspObject, MSP_MOTOR, (uint8_t*) motorData, sizeof(MspMotors));
 }
+#endif
 
 static void mspHandleRequestFeaturesConfig(MspObject* pMspObject)
 {

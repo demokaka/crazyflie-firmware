@@ -31,7 +31,11 @@
 #include "log.h"
 #include "param.h"
 #include "num.h"
+
+#ifndef CONFIG_PLATFORM_SITL
 #include "autoconf.h"
+#endif
+
 #include "config.h"
 
 #include "debug.h"
